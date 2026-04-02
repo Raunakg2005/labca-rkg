@@ -1,5 +1,6 @@
 langchain
 langchain-google-genai
+langgraph
 duckduckgo-search
 pypdf
 fpdf2

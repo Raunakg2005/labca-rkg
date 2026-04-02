@@ -1,0 +1,33 @@
+
+============================================================
+  MULTI-AGENT PIPELINE
+  Topic: super natural powers in india
+  Log:   agent_log_super_natural_powers_in_india_20260402_152138.txt
+============================================================
+
+────────────────────────────────────────────────────────────
+🔍  [RESEARCHER]  Searching for information...
+────────────────────────────────────────────────────────────
+  → Searching: Yogic siddhis in ancient Indian texts
+  → Searching: Supernatural abilities attributed to Indian gurus and sadhus
+  → Searching: Folklore and myths of supernatural powers in India
+
+  ✅ Collected 15 unique references from 3 searches.
+
+────────────────────────────────────────────────────────────
+📝  [SUMMARIZER]  Synthesizing findings...
+────────────────────────────────────────────────────────────
+  ✅ Summary generated (601 words).
+
+────────────────────────────────────────────────────────────
+🧐  [CRITIC]  Reviewing summary quality...
+────────────────────────────────────────────────────────────
+  ✅ Critic verdict: APPROVE
+  Feedback: VERDICT: approve
+
+FEEDBACK: While the summary is well-structured and comprehensive, the "Key Findings / Advancements" section could be refined. The term "Advancements" might imply new research or empi...
+
+────────────────────────────────────────────────────────────
+📄  [PDF WRITER]  Generating final PDF report...
+────────────────────────────────────────────────────────────
+  ✅ PDF successfully generated: research_super_natural_powers_in_india_20260402_152207.pdf

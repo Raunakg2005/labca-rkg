@@ -1,0 +1,20 @@
+# Environments
+.venv/
+venv/
+env/
+
+# Python caching
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Environment configurations
+.env
+
+# Generated Output files
+
+
+# IDE / Editor
+.vscode/
+.idea/
+.DS_Store
