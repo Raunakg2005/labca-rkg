@@ -68,14 +68,24 @@ Return ONLY the 3 queries, one per line. No numbering, no explanation.
     for q in queries:
         print(f"  → Searching: {q}")
         result = search_tool.invoke({"query": q})
-        all_results.append(f"[Query: {q}]\n{result}")
-
-        # Extract URLs from result lines
+        
+        formatted_result_lines = []
         for line in result.splitlines():
             if line.startswith("URL:"):
                 url = line.replace("URL:", "").strip()
                 if url and url not in all_urls:
                     all_urls.append(url)
+                
+                # Assign the citation index based on its position in all_urls
+                if url:
+                    ref_idx = all_urls.index(url) + 1
+                    formatted_result_lines.append(f"URL [{ref_idx}]: {url}")
+                else:
+                    formatted_result_lines.append(line)
+            else:
+                formatted_result_lines.append(line)
+
+        all_results.append(f"[Query: {q}]\n" + "\n".join(formatted_result_lines))
 
     raw_findings = "\n\n".join(all_results)
     references = "\n".join(all_urls)
@@ -109,8 +119,9 @@ Structure your output with these sections:
 3. Applications & Implications
 4. Conclusion
 
-Write in formal academic prose. Do NOT include any URLs or references in this
-output — those will be added separately. Aim for 400–600 words.
+Write in formal academic prose. You MUST include inline citations like [1] or [2] 
+within the text to cite the facts, corresponding to the "URL [X]" tags in the raw findings. 
+Do NOT print the URL list at the bottom. Aim for 400–600 words.
 """)
 
     user_prompt = HumanMessage(content=f"""
@@ -188,8 +199,10 @@ def reviser_node(state: ResearchState) -> dict:
 
     system_prompt = SystemMessage(content="""
 You are a senior research writer. Revise the given summary based on the
-critic's feedback. Keep the same 4-section structure but improve depth,
-clarity, and completeness. Aim for 500–700 words.
+critic's feedback. Keep the same 4-section structure.
+
+CRITICAL: You must preserve or add inline citations like [1] or [2] corresponding
+to the source material facts. Aim for 500–700 words.
 """)
 
     user_prompt = HumanMessage(content=f"""
