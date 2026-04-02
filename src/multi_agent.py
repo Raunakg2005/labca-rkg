@@ -281,9 +281,10 @@ def build_pipeline() -> StateGraph:
 # ---------------------------------------------------------------------------
 # Public Entry Point
 # ---------------------------------------------------------------------------
-def run_multi_agent_pipeline(topic: str) -> None:
+def run_multi_agent_pipeline(topic: str) -> tuple[str | None, str]:
     """
     Run the full multi-agent research pipeline for the given topic.
+    Returns: (pdf_path, log_path)
     """
     log_path = start_logging(topic)
     print(f"\n{'='*60}")
@@ -312,7 +313,14 @@ def run_multi_agent_pipeline(topic: str) -> None:
 
     print(f"\n{'='*60}")
     print(f"  Pipeline complete!")
-    if final_state.get("pdf_path"):
-        print(f"  Output: {final_state['pdf_path']}")
+    pdf_out = final_state.get("pdf_path")
+    if pdf_out:
+        print(f"  Output: {pdf_out}")
     print(f"  Log saved to: {log_path}")
     print(f"{'='*60}\n")
+    
+    # Parse the actual file path string from the return text
+    if pdf_out and "PDF successfully generated:" in pdf_out:
+        pdf_out = pdf_out.split("PDF successfully generated:")[-1].strip()
+        
+    return pdf_out, log_path

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agentic AI Research Assistant</title>
+    <!-- Use Google Fonts (Inter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --surface-hover: #334155;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #475569;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin-top: 5rem;
+            padding: 2rem;
+            background-color: var(--surface);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        h1 {
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #60a5fa, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 2.5rem;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            color: var(--text);
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        }
+
+        button {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--primary);
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        button:disabled {
+            background-color: var(--border);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        #status-area {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+        }
+
+        #results-area {
+            display: none;
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .success-box {
+            padding: 2rem;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid #10b981;
+            border-radius: 8px;
+        }
+
+        .success-box h3 {
+            color: #10b981;
+            margin-top: 0;
+        }
+
+        .download-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* Spinner Animation */
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border-left-color: var(--primary);
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-msg {
+            color: #ef4444;
+            margin-top: 1rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Research Assistant</h1>
+        <p class="subtitle">Multi-Agent AI continuously searching the web to craft perfect reports.</p>
+
+        <div class="input-group">
+            <input type="text" id="topicInput" placeholder="Enter a research topic (e.g., Solid State Batteries)" autofocus autocomplete="off">
+            <button id="runBtn" onclick="runPipeline()">Start Research</button>
+        </div>
+        
+        <div id="error-box" class="error-msg" style="display: none;"></div>
+
+        <div id="status-area">
+            <div class="spinner"></div>
+            <h3>Agents are working...</h3>
+            <p>1. <b>Researcher</b> is querying DuckDuckGo...</p>
+            <p>2. <b>Summarizer</b> is structuring facts...</p>
+            <p>3. <b>Critic</b> is reviewing output (revising if needed)...</p>
+            <p>4. <b>PDF Maker</b> is rendering the document...</p>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 1.5rem;">This process usually takes 20-40 seconds.</p>
+        </div>
+
+        <div id="results-area">
+            <div class="success-box">
+                <h3>✨ Research Complete!</h3>
+                <p>The multi-agent pipeline successfully researched <b><span id="result-topic"></span></b>.</p>
+                <div class="download-links">
+                    <a href="/download/pdf"><button>📥 Download PDF</button></a>
+                    <a href="/download/log"><button class="btn-outline">📄 View Agent Logs</button></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function runPipeline() {
+            const topicInput = document.getElementById('topicInput');
+            const runBtn = document.getElementById('runBtn');
+            const statusArea = document.getElementById('status-area');
+            const resultsArea = document.getElementById('results-area');
+            const resultTopic = document.getElementById('result-topic');
+            const errorBox = document.getElementById('error-box');
+            
+            const topic = topicInput.value.trim();
+            
+            if (!topic) {
+                errorBox.textContent = "Please enter a topic.";
+                errorBox.style.display = "block";
+                return;
+            }
+
+            // Reset UI
+            errorBox.style.display = "none";
+            resultsArea.style.display = 'none';
+            statusArea.style.display = 'block';
+            runBtn.disabled = true;
+            topicInput.disabled = true;
+
+            try {
+                const response = await fetch('/run', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ topic: topic })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    statusArea.style.display = 'none';
+                    resultTopic.textContent = topic;
+                    resultsArea.style.display = 'block';
+                } else {
+                    throw new Error(data.error || "Unknown server error occurred.");
+                }
+            } catch (err) {
+                statusArea.style.display = 'none';
+                errorBox.textContent = "❌ Failed: " + err.message;
+                errorBox.style.display = "block";
+            } finally {
+                runBtn.disabled = false;
+                topicInput.disabled = false;
+                topicInput.focus();
+            }
+        }
+        
+        // Allow pressing Enter to submit
+        document.getElementById('topicInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') runPipeline();
+        });
+    </script>
+</body>
+</html>
