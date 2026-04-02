@@ -62,51 +62,11 @@ The multi-agent pipeline explicitly divides reasoning into four phases:
 
 ### Architecture Diagram
 
-*(You can copy/paste this Mermaid diagram into any Markdown renderer or diagram generator like excalidraw)*
-
-```mermaid
-graph TD
-    User([User Enters Topic]) --> Start{Mode Selection}
-    
-    Start -->|Mode 1| ReAct[Single Agent ReAct Loop]
-    ReAct <-->|Thought/Action/Obs| Tools1[(Tools: Search & PDF)]
-    ReAct --> PDF1([Output PDF])
-
-    Start -->|Mode 2| Researcher[Researcher Node]
-    Researcher -->|Runs 3 Searches| DDG[DuckDuckGo Tool]
-    DDG --> Researcher
-    Researcher -->|raw findings| Summarizer[Summarizer Node]
-    Summarizer -->|structured text| Critic[Critic Node]
-    
-    Critic -->|Feedback| Decision{Verdict?}
-    Decision -->|Revise| Reviser[Reviser Node]
-    Reviser --> Critic
-    
-    Decision -->|Approve| PDFWriter[PDF Writer Node]
-    PDFWriter --> PDFTool[generate_pdf Tool]
-    PDFTool --> PDF2([Output PDF])
-```
+![System Architecture Diagram](img/architecture_diagram.png)
 
 ### Tool Flow Diagram
 
-```mermaid
-sequenceDiagram
-    participant User
-    participant LLM Agent
-    participant DuckDuckGo API
-    participant FPDF2 Tool
-    participant Local OS
-
-    User->>LLM Agent: Prompt "Research Topic X"
-    LLM Agent->>LLM Agent: Reason: "I must search first"
-    LLM Agent->>DuckDuckGo API: Execute search_tool(query)
-    DuckDuckGo API-->>LLM Agent: Return JSON(Title, URL, Snippet)
-    LLM Agent->>LLM Agent: Synthesize Summary
-    LLM Agent->>FPDF2 Tool: Execute generate_pdf(title, summary)
-    FPDF2 Tool->>Local OS: Write bytes to disk
-    Local OS-->>LLM Agent: Return "Success"
-    LLM Agent-->>User: "PDF generated successfully."
-```
+![Tool Flow Diagram](img/tool_flow_diagram.png)
 
 ### Observable Agent Behavior (Logs / Traces)
 A full system logger was implemented (`AgentLogger`) which hooks into `sys.stdout`. It intercepts both the ReAct reasoning loops and the LangGraph transitions and saves them to a file (e.g. `agent_log_super_natural_powers_in_india_20260402_152138.txt`). 

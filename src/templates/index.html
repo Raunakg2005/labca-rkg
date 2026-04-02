@@ -202,9 +202,14 @@
                 <h3>✨ Research Complete!</h3>
                 <p>The multi-agent pipeline successfully researched <b><span id="result-topic"></span></b>.</p>
                 <div class="download-links">
-                    <a href="/download/pdf"><button>📥 Download PDF</button></a>
-                    <a href="/download/log"><button class="btn-outline">📄 View Agent Logs</button></a>
+                    <a href="/download/pdf" target="_blank"><button>📥 Download PDF</button></a>
+                    <a href="/download/log" target="_blank"><button class="btn-outline">📄 View Agent Logs</button></a>
                 </div>
+            </div>
+
+            <!-- PDF Preview Area -->
+            <div style="margin-top: 2rem; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
+                <iframe id="pdfViewer" src="" width="100%" height="650px" style="border: none;"></iframe>
             </div>
         </div>
     </div>
@@ -245,6 +250,10 @@
                 if (data.success) {
                     statusArea.style.display = 'none';
                     resultTopic.textContent = topic;
+                    
+                    // Set the iframe source to the new PDF, cache-busting to ensure it reloads
+                    document.getElementById('pdfViewer').src = '/download/pdf?t=' + new Date().getTime();
+                    
                     resultsArea.style.display = 'block';
                 } else {
                     throw new Error(data.error || "Unknown server error occurred.");
