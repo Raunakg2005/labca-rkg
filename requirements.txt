@@ -1,0 +1,6 @@
+langchain
+langchain-google-genai
+duckduckgo-search
+pypdf
+fpdf2
+python-dotenv
